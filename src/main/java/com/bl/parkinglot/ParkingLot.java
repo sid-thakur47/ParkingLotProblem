@@ -7,14 +7,15 @@ package com.bl.parkinglot;
 
 public class ParkingLot {
 
-/**
- * @param: car Car object
- **/
+    /**
+     * @param: car Car object
+     **/
 
     private Object car;
 
     //to park the car
     public boolean parkCar(Object car) {
+        if (this.car != null) return false;
         this.car = car;
         return true;
     }
