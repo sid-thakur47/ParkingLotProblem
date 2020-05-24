@@ -77,5 +77,18 @@ public class ParkingLotTest {
             e.printStackTrace();
         }
     }
+    @Test
+    public void given_Car_WhenParkingLotFull_ShouldInformAirportSecurity() {
+        AirportSecurity airportSecurity = new AirportSecurity();
+        parkingLot.registerOwner( owner );
+        parkingLot.registerSecurity(airportSecurity);
+        try {
+            parkingLot.park( car );
+            parkingLot.park( new Object() );
+        } catch (ParkingLotException e) {
+            boolean checkCapacityFull = airportSecurity.isCapacityFull();
+            Assert.assertTrue( checkCapacityFull );
+        }
+    }
 }
 
