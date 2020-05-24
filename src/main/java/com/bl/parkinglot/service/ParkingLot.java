@@ -15,6 +15,8 @@ public class ParkingLot {
 
     /**
      * @param: car Car object
+     * @param: carList to store list of cars
+     * @oaram; observerList to store list of observer
      **/
     private int actualCapacity;
     private List<Object> carList;
@@ -26,19 +28,22 @@ public class ParkingLot {
         this.actualCapacity = capacity;
     }
 
+    //to add observers to list
     public void registerObserver(ParkingLotObserver observer) {
         this.observerList.add( observer );
     }
 
+    //to set the capacity of parking lot
     public void setCapacity(int capacity) {
         this.actualCapacity = capacity;
     }
 
-    //to park the car
+    //to check car is parked
     public boolean isCarPark(Object car) {
         return this.carList.contains( car );
     }
 
+    //to park the car
     public void park(Object car) throws ParkingLotException {
         if (this.carList.size() == actualCapacity) {
             for (ParkingLotObserver observer : observerList) {
