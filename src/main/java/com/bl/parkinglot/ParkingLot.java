@@ -16,6 +16,7 @@ public class ParkingLot {
     private int actualCapacity;
     private List<Object> carList;
     private ParkingLotOwner owner;
+    private AirportSecurity security;
 
     public ParkingLot(int capacity) {
         this.carList = new ArrayList<>();
@@ -24,6 +25,10 @@ public class ParkingLot {
 
     public void registerOwner(ParkingLotOwner owner) {
         this.owner = owner;
+    }
+
+    public void registerSecurity(AirportSecurity airportSecurity) {
+        this.security = airportSecurity;
     }
 
     public void setCapacity(int capacity) {
@@ -41,6 +46,7 @@ public class ParkingLot {
     public void park(Object car) throws ParkingLotException {
         if (this.carList.size() == actualCapacity) {
             owner.capacityIsFull();
+            security.capacityIsFull();
             throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
         }
         this.carList.add( car );
