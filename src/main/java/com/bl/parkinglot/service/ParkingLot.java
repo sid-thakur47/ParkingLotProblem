@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ParkingLot {
 
-    boolean isCapacityFull;
     /**
      * @param: car Car object
      * @param: carList to store list of cars
@@ -22,11 +21,13 @@ public class ParkingLot {
     private int actualCapacity;
     private List<Object> carList;
     private List<ParkingLotObserver> observerList;
+    private int flag;
 
     public ParkingLot(int capacity) {
         this.observerList = new ArrayList<>();
         this.carList = new ArrayList<>();
         this.actualCapacity = capacity;
+        this.flag = 0;
     }
 
     //to add observers to list
@@ -46,28 +47,39 @@ public class ParkingLot {
 
     //to park the car
     public void park(Object car) throws ParkingLotException {
+        flag = 1;
         if (isCarPark( car )) {
             throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
         }
         if (this.carList.size() == actualCapacity) {
-            for (ParkingLotObserver observer : observerList) {
-                observer.capacityIsFull();
-            }
-            throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
+            checkCapacity();
         }
         this.carList.add( car );
     }
 
     //to unPark the car
-    public boolean unParkCar(Object car)  {
+    public boolean unParkCar(Object car) throws ParkingLotException {
+        flag = 0;
         if (this.carList == null) return false;
         if (this.carList.contains( car )) {
             this.carList.remove( car );
-            for (ParkingLotObserver observer : observerList) {
-                observer.capacityAvailable();
-            }
+            checkCapacity();
             return true;
         }
         return false;
     }
+
+    //check capacity is full or available
+    public void checkCapacity() throws ParkingLotException {
+        if (flag == 1) {
+            for (ParkingLotObserver observer : observerList) {
+                observer.capacityIsFull();
+            }
+            throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
+        }
+        for (ParkingLotObserver observer : observerList) {
+            observer.capacityAvailable();
+        }
+    }
 }
+
