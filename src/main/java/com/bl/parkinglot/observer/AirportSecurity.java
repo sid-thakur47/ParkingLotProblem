@@ -1,6 +1,8 @@
-package com.bl.parkinglot;
+package com.bl.parkinglot.observer;
 
-public class AirportSecurity {
+import com.bl.parkinglot.observer.ParkingLotObserver;
+
+public class AirportSecurity implements ParkingLotObserver {
 
     private boolean isFullCapacity;
 

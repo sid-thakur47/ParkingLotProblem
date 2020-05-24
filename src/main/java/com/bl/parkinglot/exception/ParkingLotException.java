@@ -4,7 +4,7 @@
  * @Date: 22/05/2020
  **********************************************************/
 
-package com.bl.parkinglot;
+package com.bl.parkinglot.exception;
 
 public class ParkingLotException extends Exception {
     public final Parking error;

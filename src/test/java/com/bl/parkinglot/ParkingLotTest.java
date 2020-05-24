@@ -1,5 +1,9 @@
 package com.bl.parkinglot;
 
+import com.bl.parkinglot.exception.ParkingLotException;
+import com.bl.parkinglot.observer.AirportSecurity;
+import com.bl.parkinglot.service.ParkingLot;
+import com.bl.parkinglot.observer.ParkingLotOwner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +58,7 @@ public class ParkingLotTest {
 
     @Test
     public void given_Car_WhenParkingLotFull_ShouldInformOwner() {
-        parkingLot.registerOwner( owner );
+        parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );
@@ -80,8 +84,7 @@ public class ParkingLotTest {
     @Test
     public void given_Car_WhenParkingLotFull_ShouldInformAirportSecurity() {
         AirportSecurity airportSecurity = new AirportSecurity();
-        parkingLot.registerOwner( owner );
-        parkingLot.registerSecurity(airportSecurity);
+        parkingLot.registerObserver(airportSecurity);
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );

@@ -3,7 +3,10 @@
  * @Author: Siddhesh Thakur
  * @Date: 22/05/2020
  **********************************************************/
-package com.bl.parkinglot;
+package com.bl.parkinglot.service;
+
+import com.bl.parkinglot.exception.ParkingLotException;
+import com.bl.parkinglot.observer.ParkingLotObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +18,16 @@ public class ParkingLot {
      **/
     private int actualCapacity;
     private List<Object> carList;
-    private ParkingLotOwner owner;
-    private AirportSecurity security;
+    private List<ParkingLotObserver> observerList;
 
     public ParkingLot(int capacity) {
+        this.observerList = new ArrayList<>();
         this.carList = new ArrayList<>();
         this.actualCapacity = capacity;
     }
 
-    public void registerOwner(ParkingLotOwner owner) {
-        this.owner = owner;
-    }
-
-    public void registerSecurity(AirportSecurity airportSecurity) {
-        this.security = airportSecurity;
+    public void registerObserver(ParkingLotObserver observer) {
+        this.observerList.add( observer );
     }
 
     public void setCapacity(int capacity) {
@@ -37,16 +36,14 @@ public class ParkingLot {
 
     //to park the car
     public boolean isCarPark(Object car) {
-        if (this.carList.contains( car )) {
-            return true;
-        }
-        return false;
+        return this.carList.contains( car );
     }
 
     public void park(Object car) throws ParkingLotException {
         if (this.carList.size() == actualCapacity) {
-            owner.capacityIsFull();
-            security.capacityIsFull();
+            for (ParkingLotObserver observer : observerList) {
+                observer.capacityIsFull();
+            }
             throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
         }
         this.carList.add( car );
