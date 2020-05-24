@@ -6,13 +6,15 @@ import org.junit.Test;
 
 public class ParkingLotTest {
     ParkingLot parkingLot;
-    ParkingLotOwner owner ;
+    ParkingLotOwner owner;
     Object car;
+    Object car2;
 
     @Before
     public void setup() {
         parkingLot = new ParkingLot( 1 );
         car = new Object();
+        car2 = new Object();
         owner = new ParkingLotOwner();
     }
 
@@ -33,20 +35,23 @@ public class ParkingLotTest {
     @Test
     public void given_Car_WhenAlreadyParked_ShouldReturnFalse() throws ParkingLotException {
         parkingLot.park( car );
-        boolean isPark = parkingLot.isCarPark( new Object() );
+        boolean isPark = parkingLot.isCarPark( car2 );
         Assert.assertFalse( isPark );
     }
+
     @Test
     public void givenUnParkedCar_WhenTryUnPark_ShouldReturnFalse() {
         boolean isPark = parkingLot.unParkCar( car );
         Assert.assertFalse( isPark );
     }
+
     @Test
     public void givenCar_WhenTryToUnParkDifferentVehicle_ShouldReturnFalse() throws ParkingLotException {
         parkingLot.park( car );
-        boolean isPark = parkingLot.unParkCar( new Object() );
+        boolean isPark = parkingLot.unParkCar( car2 );
         Assert.assertFalse( isPark );
     }
+
     @Test
     public void given_Car_WhenParkingLotFull_ShouldInformOwner() {
         parkingLot.registerOwner( owner );
@@ -56,6 +61,20 @@ public class ParkingLotTest {
         } catch (ParkingLotException e) {
             boolean checkCapacityFull = owner.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
+        }
+    }
+
+    @Test
+    public void givenWhenCapacity_ShouldAbleToParkAsPerCapacity() {
+        parkingLot.setCapacity( 2 );
+        try {
+            parkingLot.park( car );
+            parkingLot.park( car2 );
+            boolean isPark1 = parkingLot.isCarPark( car );
+            boolean isPark2 = parkingLot.isCarPark( car2 );
+            Assert.assertTrue( isPark1 && isPark2 );
+        } catch (ParkingLotException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -43,8 +43,6 @@ public class ParkingLot {
             owner.capacityIsFull();
             throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
         }
-        if(isCarPark( car ))
-            throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
         this.carList.add( car );
     }
 
