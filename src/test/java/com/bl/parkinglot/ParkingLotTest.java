@@ -107,5 +107,15 @@ public class ParkingLotTest {
             Assert.assertTrue( checkCapacityFullOwner && checkCapacityFullSecurity );
         }
     }
+    @Test
+    public void given_Car_ParkingSameAgain_ShouldReturnException() {
+        parkingLot.registerObserver( owner );
+        try {
+            parkingLot.park( car );
+            parkingLot.park( car );
+        } catch (ParkingLotException e) {
+            Assert.assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
+        }
+    }
 }
 
