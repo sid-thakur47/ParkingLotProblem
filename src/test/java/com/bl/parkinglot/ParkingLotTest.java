@@ -2,8 +2,8 @@ package com.bl.parkinglot;
 
 import com.bl.parkinglot.exception.ParkingLotException;
 import com.bl.parkinglot.observer.AirportSecurity;
-import com.bl.parkinglot.service.ParkingLot;
 import com.bl.parkinglot.observer.ParkingLotOwner;
+import com.bl.parkinglot.service.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,13 +84,27 @@ public class ParkingLotTest {
     @Test
     public void given_Car_WhenParkingLotFull_ShouldInformAirportSecurity() {
         AirportSecurity airportSecurity = new AirportSecurity();
-        parkingLot.registerObserver(airportSecurity);
+        parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );
         } catch (ParkingLotException e) {
             boolean checkCapacityFull = airportSecurity.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
+        }
+    }
+    @Test
+    public void given_Car_WhenParkingLotFull_ShouldInformObservers() {
+        AirportSecurity airportSecurity = new AirportSecurity();
+        parkingLot.registerObserver( owner );
+        parkingLot.registerObserver( airportSecurity );
+        try {
+            parkingLot.park( car );
+            parkingLot.park( new Object() );
+        } catch (ParkingLotException e) {
+            boolean checkCapacityFullOwner = owner.isCapacityFull();
+            boolean checkCapacityFullSecurity = airportSecurity.isCapacityFull();
+            Assert.assertTrue( checkCapacityFullOwner && checkCapacityFullSecurity );
         }
     }
 }
