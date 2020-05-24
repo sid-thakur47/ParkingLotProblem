@@ -38,5 +38,11 @@ public class ParkingLotTest {
         boolean isPark = parkingLot.unParkCar( car );
         Assert.assertFalse( isPark );
     }
+    @Test
+    public void givenCar_WhenTryToUnParkDifferentVehicle_ShouldReturnFalse() {
+        parkingLot.parkCar(car);
+        boolean isPark = parkingLot.unParkCar(new Object());
+        Assert.assertFalse(isPark);
+    }
 }
 
