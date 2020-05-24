@@ -11,6 +11,7 @@ import org.junit.Test;
 public class ParkingLotTest {
     ParkingLot parkingLot;
     ParkingLotOwner owner;
+    AirportSecurity airportSecurity;
     Object car;
     Object car2;
 
@@ -20,6 +21,7 @@ public class ParkingLotTest {
         car = new Object();
         car2 = new Object();
         owner = new ParkingLotOwner();
+        airportSecurity = new AirportSecurity();
     }
 
     @Test
@@ -95,7 +97,6 @@ public class ParkingLotTest {
     }
     @Test
     public void given_Car_WhenParkingLotFull_ShouldInformObservers() {
-        AirportSecurity airportSecurity = new AirportSecurity();
         parkingLot.registerObserver( owner );
         parkingLot.registerObserver( airportSecurity );
         try {
@@ -117,8 +118,9 @@ public class ParkingLotTest {
             Assert.assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
         }
     }
+
     @Test
-    public void givenWhen_ParkingSpaceIsAvailableAfterFull_ShouldReturnTrue() {
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() {
         parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
@@ -129,5 +131,16 @@ public class ParkingLotTest {
             Assert.assertFalse( checkFull );
         }
     }
+    @Test
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() {
+        parkingLot.registerObserver( airportSecurity );
+        try {
+            parkingLot.park( car );
+            parkingLot.park( car2 );
+        } catch (ParkingLotException e) {
+            parkingLot.unParkCar( car );
+            boolean checkFull = airportSecurity.isCapacityFull();
+            Assert.assertFalse( checkFull );
+        }
+    }
 }
-
