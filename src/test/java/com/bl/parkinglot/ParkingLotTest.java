@@ -44,7 +44,7 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenUnParkedCar_WhenTryUnPark_ShouldReturnFalse() {
+    public void givenUnParkedCar_WhenTryUnPark_ShouldReturnFalse() throws ParkingLotException {
         boolean isPark = parkingLot.unParkCar( car );
         Assert.assertFalse( isPark );
     }
@@ -115,6 +115,18 @@ public class ParkingLotTest {
             parkingLot.park( car );
         } catch (ParkingLotException e) {
             Assert.assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
+        }
+    }
+    @Test
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_ShouldReturnTrue() {
+        parkingLot.registerObserver( owner );
+        try {
+            parkingLot.park( car );
+            parkingLot.park( car2 );
+        } catch (ParkingLotException e) {
+            parkingLot.unParkCar( car );
+            boolean checkFull = owner.isCapacityFull();
+            Assert.assertFalse( checkFull );
         }
     }
 }
