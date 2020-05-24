@@ -45,6 +45,9 @@ public class ParkingLot {
 
     //to park the car
     public void park(Object car) throws ParkingLotException {
+        if (isCarPark( car )) {
+            throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
+        }
         if (this.carList.size() == actualCapacity) {
             for (ParkingLotObserver observer : observerList) {
                 observer.capacityIsFull();

@@ -14,6 +14,6 @@ public class ParkingLotException extends Exception {
     }
 
     public enum Parking {
-        PARKING_FULL
+        PARKING_FULL,ALREADY_PARKED
     }
 }
