@@ -22,6 +22,7 @@ public class ParkingLot {
 
     //to unPark the car
     public boolean unParkCar(Object car) {
+        if (this.car == null) return false;
         if (this.car.equals( car )) {
             this.car = null;
             return true;
