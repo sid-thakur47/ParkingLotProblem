@@ -5,19 +5,21 @@
  **********************************************************/
 package com.bl.parkinglot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParkingLot {
 
     /**
      * @param: car Car object
      **/
     private int actualCapacity;
-    private int currentCapacity;
-    private Object car;
+    private List<Object> carList;
     private ParkingLotOwner owner;
 
     public ParkingLot(int capacity) {
+        this.carList = new ArrayList<>();
         this.actualCapacity = capacity;
-        this.currentCapacity = 0;
     }
 
     public void registerOwner(ParkingLotOwner owner) {
@@ -30,25 +32,27 @@ public class ParkingLot {
 
     //to park the car
     public boolean isCarPark(Object car) {
-        if(this.car.equals( car ))
-        return true;
-        return  false;
+        if (this.carList.contains( car )) {
+            return true;
+        }
+        return false;
     }
 
     public void park(Object car) throws ParkingLotException {
-        if (this.currentCapacity == actualCapacity) {
+        if (this.carList.size() == actualCapacity) {
             owner.capacityIsFull();
             throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
         }
-        this.currentCapacity++;
-        this.car = car;
+        if(isCarPark( car ))
+            throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
+        this.carList.add( car );
     }
 
     //to unPark the car
     public boolean unParkCar(Object car) {
-        if (this.car == null) return false;
-        if (this.car.equals( car )) {
-            this.car = null;
+        if (this.carList == null) return false;
+        if (this.carList.contains( car )) {
+            this.carList.remove( car );
             return true;
         }
         return false;
