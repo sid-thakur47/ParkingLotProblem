@@ -1,13 +1,15 @@
 package com.bl.parkinglot.observer;
 
-import com.bl.parkinglot.observer.ParkingLotObserver;
-
 public class AirportSecurity implements ParkingLotObserver {
 
     private boolean isFullCapacity;
 
     public void capacityIsFull() {
         isFullCapacity = true;
+    }
+    @Override
+    public void capacityAvailable() {
+        isFullCapacity = false;
     }
 
     public boolean isCapacityFull() {

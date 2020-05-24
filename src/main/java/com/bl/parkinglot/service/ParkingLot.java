@@ -13,6 +13,7 @@ import java.util.List;
 
 public class ParkingLot {
 
+    boolean isCapacityFull;
     /**
      * @param: car Car object
      * @param: carList to store list of cars
@@ -58,13 +59,15 @@ public class ParkingLot {
     }
 
     //to unPark the car
-    public boolean unParkCar(Object car) {
+    public boolean unParkCar(Object car)  {
         if (this.carList == null) return false;
         if (this.carList.contains( car )) {
             this.carList.remove( car );
+            for (ParkingLotObserver observer : observerList) {
+                observer.capacityAvailable();
+            }
             return true;
         }
         return false;
     }
 }
-
