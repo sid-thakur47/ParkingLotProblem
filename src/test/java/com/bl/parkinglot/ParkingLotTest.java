@@ -8,20 +8,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParkingLotTest {
     ParkingLot parkingLot;
     ParkingLotOwner owner;
     AirportSecurity airportSecurity;
+    ArrayList slotList;
     Object car;
     Object car2;
 
     @Before
     public void setup() {
-        parkingLot = new ParkingLot( 1 );
+        parkingLot = new ParkingLot( 3 );
         car = new Object();
         car2 = new Object();
         owner = new ParkingLotOwner();
         airportSecurity = new AirportSecurity();
+        slotList = new ArrayList();
     }
 
     @Test
@@ -64,7 +69,7 @@ public class ParkingLotTest {
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             boolean checkCapacityFull = owner.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
         }
@@ -78,8 +83,9 @@ public class ParkingLotTest {
             parkingLot.park( car2 );
             boolean isPark1 = parkingLot.isCarPark( car );
             boolean isPark2 = parkingLot.isCarPark( car2 );
-            Assert.assertTrue( isPark1 && isPark2 );
-        } catch (ParkingLotException e) {
+            Assert.assertTrue( isPark1 );
+            Assert.assertTrue( isPark2 );
+        } catch(ParkingLotException e) {
             e.printStackTrace();
         }
     }
@@ -90,7 +96,7 @@ public class ParkingLotTest {
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             boolean checkCapacityFull = airportSecurity.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
         }
@@ -102,7 +108,7 @@ public class ParkingLotTest {
         try {
             parkingLot.park( car );
             parkingLot.park( new Object() );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             boolean checkCapacityFullOwner = owner.isCapacityFull();
             boolean checkCapacityFullSecurity = airportSecurity.isCapacityFull();
             Assert.assertTrue( checkCapacityFullOwner && checkCapacityFullSecurity );
@@ -114,33 +120,49 @@ public class ParkingLotTest {
         try {
             parkingLot.park( car );
             parkingLot.park( car );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             Assert.assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
         }
     }
 
     @Test
-    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() {
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() throws ParkingLotException {
         parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             parkingLot.unParkCar( car );
             boolean checkFull = owner.isCapacityFull();
             Assert.assertFalse( checkFull );
         }
     }
     @Test
-    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() {
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() throws ParkingLotException {
         parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
-        } catch (ParkingLotException e) {
+        } catch(ParkingLotException e) {
             parkingLot.unParkCar( car );
             boolean checkFull = airportSecurity.isCapacityFull();
             Assert.assertFalse( checkFull );
         }
+    }
+
+    @Test
+    public void givenParkingLotSystem_WhenListOfEmptySlotsCalled_ShouldReturnAvailableSlots() throws ParkingLotException {
+        Object car3 = new Object();
+        parkingLot = new ParkingLot( 4 );
+        slotList.add( 0 );
+        slotList.add( 1 );
+        slotList.add( 2 );
+        parkingLot.park( 1, car );
+        parkingLot.park( 2, car2 );
+        parkingLot.park( 3, car3 );
+        parkingLot.unParkCar( car );
+        parkingLot.unParkCar( car2 );
+        List emptySlot = parkingLot.getSlots();
+        Assert.assertEquals( slotList, emptySlot );
     }
 }
