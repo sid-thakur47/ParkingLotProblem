@@ -120,7 +120,7 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() throws ParkingLotException {
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() {
         parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
@@ -132,7 +132,7 @@ public class ParkingLotTest {
         }
     }
     @Test
-    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() throws ParkingLotException {
+    public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() {
         parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
