@@ -1,5 +1,6 @@
 package com.bl.parkinglot;
 
+import com.bl.parkinglot.constant.DriverType;
 import com.bl.parkinglot.exception.ParkingLotException;
 import com.bl.parkinglot.model.Vehicle;
 import com.bl.parkinglot.observer.AirportSecurity;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ParkingLotTest {
+public class ParkingLotTest  implements  DriverType{
 
     ParkingLot parkingLot;
     ParkingLotOwner owner;
@@ -244,5 +245,18 @@ public class ParkingLotTest {
         parkingManager.parkCar( car4);
         assertEquals( parkingLot2.getSlots().size(), 3);
         assertEquals( parkingLot1.getSlots().size(), 3 );
+    }
+    //10
+    @Test
+    public void givenCarToPark_WhenDriverIsHandCapped_ShouldParkAtNearestLocation() throws ParkingLotException {
+        ParkingLot parkingLot = new ParkingLot( 5 );
+        parkingLot.park( car, Driver.NORMAL );
+        parkingLot.park( car2, Driver.HANDICAPPED );
+        parkingLot.park( car3, Driver.NORMAL );
+        parkingLot.park( car4, Driver.HANDICAPPED );
+        int nearestLocation = parkingLot.findCarLocation( car2 );
+        int nearestLocation2 = parkingLot.findCarLocation( car4 );
+        assertEquals( 0, nearestLocation );
+        assertEquals( 1, nearestLocation2 );
     }
 }
