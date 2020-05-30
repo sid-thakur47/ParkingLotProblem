@@ -17,9 +17,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class ParkingLotTest {
+
     ParkingLot parkingLot;
     ParkingLotOwner owner;
     AirportSecurity airportSecurity;
+    ParkingManager parkingManager;
     ArrayList slotList;
     Vehicle car;
     Vehicle car2;
@@ -35,6 +37,7 @@ public class ParkingLotTest {
         car4 = new Vehicle();
         owner = new ParkingLotOwner();
         airportSecurity = new AirportSecurity();
+        parkingManager = new ParkingManager();
         slotList = new ArrayList();
     }
 
@@ -86,7 +89,7 @@ public class ParkingLotTest {
 
     @Test
     public void givenWhenCapacity_ShouldAbleToParkAsPerCapacity() {
-        parkingLot.setCapacity( 2 );
+        ParkingLot parkingLot = new ParkingLot( 5 );
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
@@ -130,12 +133,14 @@ public class ParkingLotTest {
             parkingLot.park( car );
             parkingLot.park( car );
         } catch(ParkingLotException e) {
+
             assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
         }
     }
 
     @Test
     public void givenWhen_ParkingSpaceIsAvailableAfterFull_Owner_ShouldReturnTrue() throws ParkingLotException {
+        parkingLot = new ParkingLot( 2 );
         parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
@@ -148,6 +153,8 @@ public class ParkingLotTest {
     }
     @Test
     public void givenWhen_ParkingSpaceIsAvailableAfterFull_Security_ShouldReturnTrue() throws ParkingLotException {
+        ParkingLot parkingLot = new ParkingLot( 2 );
+        parkingLot.addLots( parkingLot );
         parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
@@ -160,28 +167,29 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenParkingLotSystem_WhenListOfEmptySlotsCalled_ShouldReturnAvailableSlots() throws ParkingLotException {
+    public void givenParkingLot_WhenCarParked_ShouldReturnEmptySlots() throws ParkingLotException {
+        Vehicle car3 = new Vehicle();
         parkingLot = new ParkingLot( 4 );
-        slotList.add( 0 );
-        slotList.add( 1 );
-        slotList.add( 2 );
         parkingLot.park( 1, car );
         parkingLot.park( 2, car2 );
         parkingLot.park( 3, car3 );
         parkingLot.unParkCar( car );
         parkingLot.unParkCar( car2 );
         List emptySlot = parkingLot.getSlots();
-        assertEquals( slotList, emptySlot );
+        assertEquals( 3, emptySlot.size() );
     }
+
     @Test
     public void given_Car_WhenParkedShouldFindItsLocation() throws ParkingLotException {
-        parkingLot.park( 1, car );
-        parkingLot.park( 2, car2 );
+        ParkingLot parkingLot = new ParkingLot( 3 );
+        parkingLot.park( car2 );
+        parkingLot.park( car );
         int vehicleLocation = parkingLot.findCarLocation( car2 );
-        assertEquals( vehicleLocation, 2 );
+        assertEquals( vehicleLocation, 0 );
     }
+
     @Test
-    public void given_Car_WhenParked_AndQueriedForLocation_ShouldThrowException() {
+    public void given_Car_WhenParked_AndQueriedForLocationForAnotherCar_ShouldThrowException() {
         try {
             parkingLot.park( car );
             parkingLot.findCarLocation( car2 );
@@ -199,6 +207,14 @@ public class ParkingLotTest {
     }
 
     @Test
+    public void given_ParkedCar_WhenObserverIsSecurity_ShouldReturnItsParkingTime() throws ParkingLotException {
+        parkingLot.registerObserver( airportSecurity );
+        parkingLot.park( car );
+        Date time = Calendar.getInstance().getTime();
+        assertEquals( time, parkingLot.getParkedTime() );
+    }
+    //9
+    @Test
     public void givenParkingLots_CarShouldGetParkedInAssignedParkingLot() throws ParkingLotException {
         ParkingLot parkingLot = new ParkingLot( 4 );
         ParkingLot parkingLot1 = new ParkingLot( 4 );
@@ -210,5 +226,23 @@ public class ParkingLotTest {
         Object secondParkingLot = parkingLot1.getCarLot( car2 );
         assertEquals( parkingLot, firstParkingLot );
         assertEquals( parkingLot1, secondParkingLot );
+    }
+
+    @Test
+    public void givenMultipleCars_WhenParkEvenly_shouldReturnTheirEmptySlots() throws ParkingLotException {
+        ParkingLot parkingLot1 = new ParkingLot( 4 );
+        ParkingLot parkingLot2 = new ParkingLot( 4 );
+        ParkingLot parkingLot3 = new ParkingLot( 4 );
+        ParkingLot parkingLot4 = new ParkingLot( 4 );
+        parkingManager.addLots( parkingLot1 );
+        parkingManager.addLots( parkingLot2 );
+        parkingManager.addLots( parkingLot3 );
+        parkingManager.addLots( parkingLot4 );
+        parkingManager.parkCar( car );
+        parkingManager.parkCar( car2 );
+        parkingManager.parkCar( car3 );
+        parkingManager.parkCar( car4);
+        assertEquals( parkingLot2.getSlots().size(), 3);
+        assertEquals( parkingLot1.getSlots().size(), 3 );
     }
 }

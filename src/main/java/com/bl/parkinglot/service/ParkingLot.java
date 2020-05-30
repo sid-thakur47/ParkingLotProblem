@@ -19,38 +19,39 @@ import static java.util.stream.IntStream.range;
 
 public class ParkingLot {
 
-    public List<ParkingLot> parkingLotList;
     /**
      * @param: car Car object
      * @param: carList to store list of cars
-     * @oaram; observerList to store list of observer
+     * @param: observerList to store list of observer
+     * @param: parkingLotList to store list of parking lots
+     * @param: to get parking time
+     * @param: to set car to specific slot
      **/
+
     private int actualCapacity;
-    private List carList;
+    private List<Vehicle> carList;
     private List<ParkingLotObserver> observerList;
+    private List<ParkingLot> parkingLotList;
     private int flag;
     private Date time;
     private int slot;
 
     public ParkingLot(int capacity) {
-        this.observerList = new ArrayList<>();
         this.carList = new ArrayList<>();
+        this.observerList = new ArrayList<>();
+        this.parkingLotList = new ArrayList<>();
         this.actualCapacity = capacity;
         this.parkingLotList = new ArrayList<>();
         range( 0, this.actualCapacity ).forEach( i -> carList.add( null ) );
         this.flag = 0;
     }
-
+    public void setActualCapacity(int actualCapacity) {
+        this.actualCapacity = actualCapacity;
+    }
     //to add type of observers to list
     public void registerObserver(ParkingLotObserver observer) {
         this.observerList.add( observer );
     }
-
-    //to set the capacity of parking lot
-    public void setCapacity(int capacity) {
-        this.actualCapacity = capacity;
-    }
-
     //getTime
     public Date getParkedTime() {
         return time;
@@ -58,6 +59,11 @@ public class ParkingLot {
     //seTime
     public void setParkedTime(Date time) {
         this.time = time;
+    }
+
+    //add parking lots
+    public void addLots(ParkingLot parkingLot) {
+        parkingLotList.add( parkingLot );
     }
 
     //to check car is parked
@@ -71,12 +77,10 @@ public class ParkingLot {
         if(isCarPark( car )) {
             throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
         }
-        if(this.carList.size() == actualCapacity && !carList.contains( null )) {
+        if(carList.size() == actualCapacity && !carList.contains( null )) {
             checkCapacity();
         }
-        slot++;
-        carList.add( car );
-        park( slot, car );
+        park( slot++, car );
         Date time = Calendar.getInstance().getTime();
         setParkedTime( time );
     }
@@ -111,23 +115,20 @@ public class ParkingLot {
     }
 
     //to return empty slots
-    public List getSlots() {
-        return range( 0, this.actualCapacity )
-                .filter( slot -> carList.get( slot ) == null )
-                .boxed()
-                .collect( Collectors.toList() );
+    public List<Integer> getSlots() {
+        List<Integer> list;
+        list = range( 0, this.actualCapacity ).filter( i -> carList.get( i ) == null )
+                .boxed().collect( Collectors.toList() );
+        return list;
     }
 
     //findLocation of car
     public int findCarLocation(Vehicle car) throws ParkingLotException {
-        if(carList.contains( car )) {
+        if(!carList.contains( car )) {
+            throw new ParkingLotException( ParkingLotException.Parking.CAR_NOT_FOUND );
+        } else {
             return carList.indexOf( car );
         }
-        throw new ParkingLotException( ParkingLotException.Parking.CAR_NOT_FOUND );
-    }
-
-    public void addLots(ParkingLot parkingLot) {
-        parkingLotList.add( parkingLot );
     }
 
     //get parking lot in which car is parked
