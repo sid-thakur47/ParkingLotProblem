@@ -229,7 +229,7 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenMultipleCars_WhenParkEvenly_shouldReturnTheirEmptySlots() throws ParkingLotException {
+    public void givenMultipleCarsAndLots_WhenParkEvenly_shouldReturnEmptyParkingLot() throws ParkingLotException {
         ParkingLot parkingLot1 = new ParkingLot( 4 );
         ParkingLot parkingLot2 = new ParkingLot( 4 );
         ParkingLot parkingLot3 = new ParkingLot( 4 );
