@@ -259,4 +259,23 @@ public class ParkingLotTest  implements  DriverType{
         assertEquals( 0, nearestLocation );
         assertEquals( 1, nearestLocation2 );
     }
+    //11
+    @Test
+    public void givenLargeCar_WhenParked_ShouldParkedAtNearestLocation() throws ParkingLotException {
+        ParkingLot parkingLot1 = new ParkingLot( 4 );
+        ParkingLot parkingLot = new ParkingLot( 4 );
+        parkingManager.addLots( parkingLot );
+        parkingManager.addLots( parkingLot1 );
+        parkingManager.parkCars( car, Driver.LARGE_CAR, Driver.NORMAL );
+        parkingManager.parkCar( car2 );
+        parkingManager.parkCar( car3 );
+        parkingManager.parkCar( car4 );
+        int firstParkingLot = parkingLot.getSlots().size();
+        int secondParkingLot = parkingLot1.getSlots().size();
+        int findLocation = parkingLot.findCarLocation( car );
+        assertEquals( 0, findLocation );
+        assertEquals( 2, firstParkingLot );
+        assertEquals( 2, secondParkingLot );
+    }
+
 }
