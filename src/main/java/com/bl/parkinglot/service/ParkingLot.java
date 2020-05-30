@@ -5,19 +5,17 @@
  **********************************************************/
 package com.bl.parkinglot.service;
 
+import com.bl.parkinglot.constant.DriverType;
 import com.bl.parkinglot.exception.ParkingLotException;
 import com.bl.parkinglot.model.Vehicle;
 import com.bl.parkinglot.observer.ParkingLotObserver;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
 
-public class ParkingLot {
+public class ParkingLot implements DriverType {
 
     /**
      * @param: car Car object
@@ -88,6 +86,17 @@ public class ParkingLot {
     public void park(int slot, Vehicle car) {
         this.carList.set( slot, car );
     }
+    //get location according to driver
+
+    public void park(Vehicle car, DriverType driver) {
+        getPreferredLocation( car, driver, slot );
+    }
+    public void getPreferredLocation(Vehicle car, DriverType driver, int slots) {
+        if(slots == 0) {
+            int slot = getDriver( driver ).get( 0 );
+            carList.set( slot, car );
+        }
+    }
 
     //to unPark the car
     public boolean unParkCar(Vehicle car) throws ParkingLotException {
@@ -139,5 +148,15 @@ public class ParkingLot {
             }
         }
         return null;
+    }
+    //get driver type
+    public List<Integer> getDriver(DriverType driver) {
+        List<Integer> parkingList = getSlots();
+        if(Driver.HANDICAPPED.equals( driver )) {
+            Collections.sort( parkingList );
+        } else if(Driver.NORMAL.equals( driver )) {
+            parkingList.sort( Collections.reverseOrder() );
+        }
+        return parkingList;
     }
 }
