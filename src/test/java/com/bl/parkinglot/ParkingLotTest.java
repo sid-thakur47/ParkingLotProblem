@@ -165,4 +165,11 @@ public class ParkingLotTest {
         List emptySlot = parkingLot.getSlots();
         Assert.assertEquals( slotList, emptySlot );
     }
+    @Test
+    public void given_Car_WhenParkedShouldFindItsLocation() throws ParkingLotException {
+        parkingLot.park( 1, car );
+        parkingLot.park( 2, car2 );
+        int vehicleLocation = parkingLot.findCarLocation( car2 );
+        Assert.assertEquals( vehicleLocation, 2 );
+    }
 }
