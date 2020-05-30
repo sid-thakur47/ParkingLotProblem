@@ -1,6 +1,7 @@
 package com.bl.parkinglot;
 
 import com.bl.parkinglot.exception.ParkingLotException;
+import com.bl.parkinglot.model.Vehicle;
 import com.bl.parkinglot.observer.AirportSecurity;
 import com.bl.parkinglot.observer.ParkingLotOwner;
 import com.bl.parkinglot.service.ParkingLot;
@@ -13,19 +14,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class ParkingLotTest {
     ParkingLot parkingLot;
     ParkingLotOwner owner;
     AirportSecurity airportSecurity;
     ArrayList slotList;
-    Object car;
-    Object car2;
+    Vehicle car;
+    Vehicle car2;
+    Vehicle car3;
+    Vehicle car4;
 
     @Before
     public void setup() {
         parkingLot = new ParkingLot( 3 );
-        car = new Object();
-        car2 = new Object();
+        car = new Vehicle();
+        car2 = new Vehicle();
+        car3 = new Vehicle();
+        car4 = new Vehicle();
         owner = new ParkingLotOwner();
         airportSecurity = new AirportSecurity();
         slotList = new ArrayList();
@@ -70,7 +77,7 @@ public class ParkingLotTest {
         parkingLot.registerObserver( owner );
         try {
             parkingLot.park( car );
-            parkingLot.park( new Object() );
+            parkingLot.park( car2 );
         } catch(ParkingLotException e) {
             boolean checkCapacityFull = owner.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
@@ -97,7 +104,7 @@ public class ParkingLotTest {
         parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
-            parkingLot.park( new Object() );
+            parkingLot.park( car2 );
         } catch(ParkingLotException e) {
             boolean checkCapacityFull = airportSecurity.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
@@ -109,7 +116,7 @@ public class ParkingLotTest {
         parkingLot.registerObserver( airportSecurity );
         try {
             parkingLot.park( car );
-            parkingLot.park( new Object() );
+            parkingLot.park( car2 );
         } catch(ParkingLotException e) {
             boolean checkCapacityFullOwner = owner.isCapacityFull();
             boolean checkCapacityFullSecurity = airportSecurity.isCapacityFull();
@@ -123,7 +130,7 @@ public class ParkingLotTest {
             parkingLot.park( car );
             parkingLot.park( car );
         } catch(ParkingLotException e) {
-            Assert.assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
+            assertEquals( ParkingLotException.Parking.ALREADY_PARKED, e.error );
         }
     }
 
@@ -154,7 +161,6 @@ public class ParkingLotTest {
 
     @Test
     public void givenParkingLotSystem_WhenListOfEmptySlotsCalled_ShouldReturnAvailableSlots() throws ParkingLotException {
-        Object car3 = new Object();
         parkingLot = new ParkingLot( 4 );
         slotList.add( 0 );
         slotList.add( 1 );
@@ -165,22 +171,22 @@ public class ParkingLotTest {
         parkingLot.unParkCar( car );
         parkingLot.unParkCar( car2 );
         List emptySlot = parkingLot.getSlots();
-        Assert.assertEquals( slotList, emptySlot );
+        assertEquals( slotList, emptySlot );
     }
     @Test
     public void given_Car_WhenParkedShouldFindItsLocation() throws ParkingLotException {
         parkingLot.park( 1, car );
         parkingLot.park( 2, car2 );
         int vehicleLocation = parkingLot.findCarLocation( car2 );
-        Assert.assertEquals( vehicleLocation, 2 );
+        assertEquals( vehicleLocation, 2 );
     }
     @Test
     public void given_Car_WhenParked_AndQueriedForLocation_ShouldThrowException() {
         try {
             parkingLot.park( car );
             parkingLot.findCarLocation( car2 );
-        } catch (ParkingLotException e) {
-            Assert.assertEquals( ParkingLotException.Parking.CAR_NOT_FOUND, e.error );
+        } catch(ParkingLotException e) {
+            assertEquals( ParkingLotException.Parking.CAR_NOT_FOUND, e.error );
         }
     }
 
@@ -189,6 +195,20 @@ public class ParkingLotTest {
         parkingLot.registerObserver( owner );
         parkingLot.park( car );
         Date time = Calendar.getInstance().getTime();
-        Assert.assertEquals( time, parkingLot.getParkedTime() );
+        assertEquals( time, parkingLot.getParkedTime() );
+    }
+
+    @Test
+    public void givenParkingLots_CarShouldGetParkedInAssignedParkingLot() throws ParkingLotException {
+        ParkingLot parkingLot = new ParkingLot( 4 );
+        ParkingLot parkingLot1 = new ParkingLot( 4 );
+        parkingLot.addLots( parkingLot );
+        parkingLot1.addLots( parkingLot1 );
+        parkingLot.park( car );
+        parkingLot1.park( car2 );
+        Object firstParkingLot = parkingLot.getCarLot( car );
+        Object secondParkingLot = parkingLot1.getCarLot( car2 );
+        assertEquals( parkingLot, firstParkingLot );
+        assertEquals( parkingLot1, secondParkingLot );
     }
 }

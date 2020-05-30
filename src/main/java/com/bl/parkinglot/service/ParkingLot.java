@@ -6,6 +6,7 @@
 package com.bl.parkinglot.service;
 
 import com.bl.parkinglot.exception.ParkingLotException;
+import com.bl.parkinglot.model.Vehicle;
 import com.bl.parkinglot.observer.ParkingLotObserver;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import static java.util.stream.IntStream.range;
 
 public class ParkingLot {
 
-    List<ParkingLot> parkingLotList;
+    public List<ParkingLot> parkingLotList;
     /**
      * @param: car Car object
      * @param: carList to store list of cars
@@ -35,6 +36,7 @@ public class ParkingLot {
         this.observerList = new ArrayList<>();
         this.carList = new ArrayList<>();
         this.actualCapacity = capacity;
+        this.parkingLotList = new ArrayList<>();
         range( 0, this.actualCapacity ).forEach( i -> carList.add( null ) );
         this.flag = 0;
     }
@@ -59,17 +61,17 @@ public class ParkingLot {
     }
 
     //to check car is parked
-    public boolean isCarPark(Object car) {
+    public boolean isCarPark(Vehicle car) {
         return this.carList.contains( car );
     }
 
     //to park the car
-    public void park(Object car) throws ParkingLotException {
+    public void park(Vehicle car) throws ParkingLotException {
         flag = 1;
-        if (isCarPark( car )) {
+        if(isCarPark( car )) {
             throw new ParkingLotException( ParkingLotException.Parking.ALREADY_PARKED );
         }
-        if (this.carList.size() == actualCapacity && !carList.contains( null )) {
+        if(this.carList.size() == actualCapacity && !carList.contains( null )) {
             checkCapacity();
         }
         slot++;
@@ -79,15 +81,15 @@ public class ParkingLot {
         setParkedTime( time );
     }
 
-    public void park(int slot, Object car) {
+    public void park(int slot, Vehicle car) {
         this.carList.set( slot, car );
     }
 
     //to unPark the car
-    public boolean unParkCar(Object car) throws ParkingLotException {
+    public boolean unParkCar(Vehicle car) throws ParkingLotException {
         flag = 0;
-        if (this.carList == null) return false;
-        if (this.carList.contains( car )) {
+        if(this.carList == null) return false;
+        if(this.carList.contains( car )) {
             this.carList.set( this.carList.indexOf( car ), null );
             checkCapacity();
             return true;
@@ -97,13 +99,13 @@ public class ParkingLot {
 
     //check capacity is full or available
     public void checkCapacity() throws ParkingLotException {
-        if (flag == 1) {
-            for (ParkingLotObserver observer : observerList) {
+        if(flag == 1) {
+            for(ParkingLotObserver observer : observerList) {
                 observer.capacityIsFull();
             }
             throw new ParkingLotException( ParkingLotException.Parking.PARKING_FULL );
         }
-        for (ParkingLotObserver observer : observerList) {
+        for(ParkingLotObserver observer : observerList) {
             observer.capacityAvailable();
         }
     }
@@ -117,10 +119,24 @@ public class ParkingLot {
     }
 
     //findLocation of car
-    public int findCarLocation(Object car) throws ParkingLotException {
-        if (carList.contains( car )) {
+    public int findCarLocation(Vehicle car) throws ParkingLotException {
+        if(carList.contains( car )) {
             return carList.indexOf( car );
         }
         throw new ParkingLotException( ParkingLotException.Parking.CAR_NOT_FOUND );
+    }
+
+    public void addLots(ParkingLot parkingLot) {
+        parkingLotList.add( parkingLot );
+    }
+
+    //get parking lot in which car is parked
+    public ParkingLot getCarLot(Vehicle car) {
+        for(ParkingLot parkingLot : parkingLotList) {
+            if(parkingLot.isCarPark( car )) {
+                return parkingLot;
+            }
+        }
+        return null;
     }
 }
