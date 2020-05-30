@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ParkingLotTest {
@@ -171,5 +173,22 @@ public class ParkingLotTest {
         parkingLot.park( 2, car2 );
         int vehicleLocation = parkingLot.findCarLocation( car2 );
         Assert.assertEquals( vehicleLocation, 2 );
+    }
+    @Test
+    public void given_Car_WhenParked_AndQueriedForLocation_ShouldThrowException() {
+        try {
+            parkingLot.park( car );
+            parkingLot.findCarLocation( car2 );
+        } catch (ParkingLotException e) {
+            Assert.assertEquals( ParkingLotException.Parking.CAR_NOT_FOUND, e.error );
+        }
+    }
+
+    @Test
+    public void given_ParkedCar_WhenObserverIsOwner_ShouldReturnItsParkingTime() throws ParkingLotException {
+        parkingLot.registerObserver( owner );
+        parkingLot.park( car );
+        Date time = Calendar.getInstance().getTime();
+        Assert.assertEquals( time, parkingLot.getParkedTime() );
     }
 }
