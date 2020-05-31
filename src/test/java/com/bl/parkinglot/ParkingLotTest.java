@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ParkingLotTest  implements  DriverType{
+public class ParkingLotTest implements DriverType {
 
     ParkingLot parkingLot;
     ParkingLotOwner owner;
@@ -242,8 +242,8 @@ public class ParkingLotTest  implements  DriverType{
         parkingManager.parkCar( car );
         parkingManager.parkCar( car2 );
         parkingManager.parkCar( car3 );
-        parkingManager.parkCar( car4);
-        assertEquals( parkingLot2.getSlots().size(), 3);
+        parkingManager.parkCar( car4 );
+        assertEquals( parkingLot2.getSlots().size(), 3 );
         assertEquals( parkingLot1.getSlots().size(), 3 );
     }
     //10
@@ -278,4 +278,15 @@ public class ParkingLotTest  implements  DriverType{
         assertEquals( 2, secondParkingLot );
     }
 
+    //12
+    @Test
+    public void givenCarColor_WhenFindCarAccordingToColor_ShouldReturnCarAccordingToColor() throws ParkingLotException {
+        parkingManager.addLots( parkingLot );
+        Vehicle car1 = new Vehicle( "White" );
+        Vehicle car2 = new Vehicle( "Black" );
+        parkingManager.parkCars( car1, Driver.SMALL_CAR, Driver.NORMAL );
+        parkingManager.parkCars( car2, Driver.SMALL_CAR, Driver.NORMAL );
+        List vehicleColor = parkingLot.getCar( "White" );
+        assertEquals( car1, vehicleColor.get( 0 ) );
+    }
 }

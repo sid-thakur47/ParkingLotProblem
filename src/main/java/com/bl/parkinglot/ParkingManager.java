@@ -21,6 +21,7 @@ public class ParkingManager implements DriverType {
     public void addLots(ParkingLot parkingLot) {
         parkingLotList.add( parkingLot );
     }
+
     //to park cars evenly
     public void parkCar(Vehicle car) throws ParkingLotException {
         Collections.sort( parkingLotList, Comparator.comparing( list -> list.getSlots()

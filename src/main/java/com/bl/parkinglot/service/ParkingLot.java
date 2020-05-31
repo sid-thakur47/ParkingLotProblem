@@ -43,9 +43,7 @@ public class ParkingLot implements DriverType {
         range( 0, this.actualCapacity ).forEach( i -> carList.add( null ) );
         this.flag = 0;
     }
-    public void setActualCapacity(int actualCapacity) {
-        this.actualCapacity = actualCapacity;
-    }
+
     //to add type of observers to list
     public void registerObserver(ParkingLotObserver observer) {
         this.observerList.add( observer );
@@ -158,5 +156,12 @@ public class ParkingLot implements DriverType {
             parkingList.sort( Collections.reverseOrder() );
         }
         return parkingList;
+    }
+
+    //get car with defined color
+    public List<Vehicle> getCar(String color) {
+        return carList.stream()
+                .filter( car -> car != null && car.getColor().equals( color ) )
+                .collect( Collectors.toList() );
     }
 }
