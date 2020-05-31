@@ -304,4 +304,37 @@ public class ParkingLotTest implements DriverType {
         assertEquals( car2, numberPlate.get( 0 ) );
         assertEquals( car2, vehicle.get( 0 ) );
     }
+    @Test
+    public void givenCarColorAndName_HandCappedDriver_WhenFindCarAccordingToColorAndName_ShouldReturnToyota() throws ParkingLotException {
+        parkingManager.addLots( parkingLot );
+        Vehicle car2 = new Vehicle( "Black", "202", "Toyota" );
+        Vehicle car1 = new Vehicle( "White", "101", "BMW" );
+        parkingManager.parkCars( car2, Driver.LARGE_CAR, Driver.HANDICAPPED );
+        parkingManager.parkCars( car1, Driver.LARGE_CAR, Driver.NORMAL );
+        int location = parkingLot.findCarLocation( car2 );
+        List vehicle = parkingLot.getCar( "Black", "Toyota" );
+        List numberPlate = parkingLot.getCarByNumberPlate( "202" );
+        assertEquals( car2, numberPlate.get( 0 ) );
+        assertEquals( 0, location );
+        assertEquals( car2, vehicle.get( 0 ) );
+    }
+
+    //14
+    @Test
+    public void givenCar_WhenFindBMWCars_ShouldReturnBMWCars() throws ParkingLotException {
+        ParkingLot parkingLot = new ParkingLot( 5 );
+        parkingManager.addLots( parkingLot );
+        Vehicle car2 = new Vehicle( "blue", "101", "BMW" );
+        Vehicle car1 = new Vehicle( "white", "102", "Toyota" );
+        Vehicle car3 = new Vehicle( "blue", "103", "Toyota" );
+        Vehicle car4 = new Vehicle( "blue", "104", "BMW" );
+        parkingManager.parkCars( car1, Driver.SMALL_CAR, Driver.NORMAL );
+        parkingManager.parkCars( car2, Driver.SMALL_CAR, Driver.NORMAL );
+        parkingManager.parkCars( car3, Driver.SMALL_CAR, Driver.NORMAL );
+        parkingManager.parkCars( car4, Driver.SMALL_CAR, Driver.NORMAL );
+        List<Vehicle> vehicleName = parkingLot.getCar( "blue", "BMW" );
+        assertEquals( car4, vehicleName.get( 0 ) );
+        assertEquals( car2, vehicleName.get( 1 ) );
+    }
+
 }
