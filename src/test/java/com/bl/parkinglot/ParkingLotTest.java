@@ -282,11 +282,26 @@ public class ParkingLotTest implements DriverType {
     @Test
     public void givenCarColor_WhenFindCarAccordingToColor_ShouldReturnCarAccordingToColor() throws ParkingLotException {
         parkingManager.addLots( parkingLot );
-        Vehicle car1 = new Vehicle( "White" );
-        Vehicle car2 = new Vehicle( "Black" );
+        Vehicle car1 = new Vehicle( "White", "101", "BMW" );
+        Vehicle car2 = new Vehicle( "Black", "202", "toyota" );
         parkingManager.parkCars( car1, Driver.SMALL_CAR, Driver.NORMAL );
         parkingManager.parkCars( car2, Driver.SMALL_CAR, Driver.NORMAL );
-        List vehicleColor = parkingLot.getCar( "White" );
+        List vehicleColor = parkingLot.getCar( "White", "BMW" );
         assertEquals( car1, vehicleColor.get( 0 ) );
+    }
+    //13
+    @Test
+    public void givenCarColorAndName_NormalDriver_WhenFindCarAccordingToColorAndName_ShouldReturnToyota() throws ParkingLotException {
+        parkingManager.addLots( parkingLot );
+        Vehicle car2 = new Vehicle( "Black", "202", "Toyota" );
+        Vehicle car1 = new Vehicle( "White", "101", "BMW" );
+        parkingManager.parkCars( car2, Driver.LARGE_CAR, Driver.NORMAL );
+        parkingManager.parkCars( car1, Driver.LARGE_CAR, Driver.NORMAL );
+        int location = parkingLot.findCarLocation( car2 );
+        List vehicle = parkingLot.getCar( "Black", "Toyota" );
+        List numberPlate = parkingLot.getCarByNumberPlate( "202" );
+        assertEquals( 0, location );
+        assertEquals( car2, numberPlate.get( 0 ) );
+        assertEquals( car2, vehicle.get( 0 ) );
     }
 }

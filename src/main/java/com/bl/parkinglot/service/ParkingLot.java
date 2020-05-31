@@ -157,11 +157,19 @@ public class ParkingLot implements DriverType {
         }
         return parkingList;
     }
-
     //get car with defined color
-    public List<Vehicle> getCar(String color) {
+    public List<Vehicle> getCar(String color, String model) {
         return carList.stream()
                 .filter( car -> car != null && car.getColor().equals( color ) )
+                .filter( car -> car.getModelName().equals( model ) )
+                .collect( Collectors.toList() );
+    }
+
+    //get car with spec
+    public List<Vehicle> getCarByNumberPlate(String numberPlate) {
+        return carList.stream()
+                .filter( car -> car != null )
+                .filter( car -> car.getNumberPlate().equals( numberPlate ) )
                 .collect( Collectors.toList() );
     }
 }
