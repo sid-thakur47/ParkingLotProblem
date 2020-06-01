@@ -109,6 +109,8 @@ public class ParkingLotTest implements DriverType {
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
+            parkingLot.park( car3 );
+            parkingLot.park( car4 );
         } catch(ParkingLotException e) {
             boolean checkCapacityFull = airportSecurity.isCapacityFull();
             Assert.assertTrue( checkCapacityFull );
@@ -121,6 +123,8 @@ public class ParkingLotTest implements DriverType {
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
+            parkingLot.park( car3 );
+            parkingLot.park( car4 );
         } catch(ParkingLotException e) {
             boolean checkCapacityFullOwner = owner.isCapacityFull();
             boolean checkCapacityFullSecurity = airportSecurity.isCapacityFull();
@@ -146,6 +150,8 @@ public class ParkingLotTest implements DriverType {
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
+            parkingLot.park( car3 );
+            parkingLot.park( car4 );
         } catch(ParkingLotException e) {
             parkingLot.unParkCar( car );
             boolean checkFull = owner.isCapacityFull();
@@ -160,6 +166,8 @@ public class ParkingLotTest implements DriverType {
         try {
             parkingLot.park( car );
             parkingLot.park( car2 );
+            parkingLot.park( car3 );
+            parkingLot.park( car4 );
         } catch(ParkingLotException e) {
             parkingLot.unParkCar( car );
             boolean checkFull = airportSecurity.isCapacityFull();
